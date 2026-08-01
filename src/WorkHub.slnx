@@ -10,6 +10,11 @@
     <Project Path="Modules/Notifications/Notifications.Domain/Notifications.Domain.csproj" />
     <Project Path="Modules/Notifications/Notifications.Infrastructure/Notifications.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/Modules/Users/">
+    <Project Path="Modules/Users/Users.Appliation/Users.Appliation.csproj" />
+    <Project Path="Modules/Users/Users.Domain/Users.Domain.csproj" />
+    <Project Path="Modules/Users/Users.Infrastructure/Users.Infrastructure.csproj" />
+  </Folder>
   <Folder Name="/Modules/Vacancies/">
     <Project Path="Modules/Vacancies/Vacancies.Application/Vacancies.Application.csproj" />
     <Project Path="Modules/Vacancies/Vacancies.Domain/Vacancies.Domain.csproj" />
