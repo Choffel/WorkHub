@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Modules/" />
+  <Folder Name="/Modules/Files/">
+    <Project Path="Modules/Files/Files.Application/Files.Application.csproj" />
+    <Project Path="Modules/Files/Files.Domain/Files.Domain.csproj" />
+    <Project Path="Modules/Files/Files.Infrastructure/Files.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Notifications/">
+    <Project Path="Modules/Notifications/Notifications.Application/Notifications.Application.csproj" />
+    <Project Path="Modules/Notifications/Notifications.Domain/Notifications.Domain.csproj" />
+    <Project Path="Modules/Notifications/Notifications.Infrastructure/Notifications.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Vacancies/">
+    <Project Path="Modules/Vacancies/Vacancies.Application/Vacancies.Application.csproj" />
+    <Project Path="Modules/Vacancies/Vacancies.Domain/Vacancies.Domain.csproj" />
+    <Project Path="Modules/Vacancies/Vacancies.Infrastructure/Vacancies.Infrastructure.csproj" />
+  </Folder>
+  <Project Path="Host/Host.csproj" />
+</Solution>
