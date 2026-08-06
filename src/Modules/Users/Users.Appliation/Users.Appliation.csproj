@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
         <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DTOs\" />
     </ItemGroup>
 
 </Project>
