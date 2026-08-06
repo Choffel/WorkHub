@@ -1,5 +1,5 @@
 using System.Text;
-using Host.Endpoints;
+
 using Host.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -99,7 +99,7 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapUserEndpoints();
+
 
 app.Run();
 
