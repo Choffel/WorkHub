@@ -15,5 +15,6 @@
     <Project Path="Modules/Vacancies/Vacancies.Domain/Vacancies.Domain.csproj" />
     <Project Path="Modules/Vacancies/Vacancies.Infrastructure/Vacancies.Infrastructure.csproj" />
   </Folder>
+  <Project Path="BuildingBlocks/BuildingBlocks.csproj" />
   <Project Path="Host/Host.csproj" />
 </Solution>
