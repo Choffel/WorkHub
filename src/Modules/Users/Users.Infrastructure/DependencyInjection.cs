@@ -18,11 +18,9 @@ public static class DependencyInjection
     public static IServiceCollection AddUsersInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         #region Database
-
         var connectionString = configuration["CONNECTION_STRING"];
-        
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString(connectionString)));
+            options.UseSqlServer(connectionString));
         #endregion
 
         #region Identity
