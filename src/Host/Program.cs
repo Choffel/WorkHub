@@ -9,6 +9,9 @@ using Users.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+DotNetEnv.Env.TraversePath().Load();
+
+
 // ── Modules DI ──
 builder.Services.AddUsersModule(builder.Configuration);
 
