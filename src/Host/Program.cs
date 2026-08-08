@@ -7,9 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Users.Infrastructure.Data;
 
+DotNetEnv.Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.TraversePath().Load();
+
 
 
 // ── Modules DI ──
@@ -82,11 +84,11 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await db.Database.EnsureCreatedAsync();
-}
+}*/
 
 if (app.Environment.IsDevelopment())
 {
