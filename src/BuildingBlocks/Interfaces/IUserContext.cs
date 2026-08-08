@@ -1,4 +1,4 @@
-namespace Users.Appliation.Interfaces;
+namespace BuildingBlocks.Interfaces;
 
 public interface IUserContext
 {
