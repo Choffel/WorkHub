@@ -388,3 +388,4 @@ FodyWeavers.xsd
 appsettings.*.local.json
 appsettings.Local.json
 secrets.json
+.env
