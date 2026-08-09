@@ -1,5 +1,4 @@
 using System.Text;
-
 using Host.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +8,8 @@ using Microsoft.OpenApi.Models;
 using Users.Infrastructure.Data;
 using Users.Infrastructure.Data.InitialData;
 using Users.Infrastructure.Identity;
+using Files.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 DotNetEnv.Env.TraversePath().Load();
 
@@ -84,7 +85,12 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 var app = builder.Build();
+
 
 
 /*using (var scope = app.Services.CreateScope())
@@ -92,6 +98,7 @@ var app = builder.Build();
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await db.Database.EnsureCreatedAsync();
 }*/
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -119,5 +126,3 @@ app.MapControllers();
 
 
 app.Run();
-
-
