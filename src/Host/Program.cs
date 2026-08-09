@@ -2,10 +2,13 @@ using System.Text;
 
 using Host.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Users.Infrastructure.Data;
+using Users.Infrastructure.Data.InitialData;
+using Users.Infrastructure.Identity;
 
 DotNetEnv.Env.TraversePath().Load();
 
@@ -103,6 +106,15 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var roleManager = services.GetRequiredService<RoleManager<RoleIdentity>>();
+    
+    await RoleInitData.InitializeAsync(roleManager);
+}
+
 app.MapControllers();
 
 

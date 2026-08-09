@@ -23,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\InitialData\" />
       <Folder Include="Data\Mifrations\" />
     </ItemGroup>
 

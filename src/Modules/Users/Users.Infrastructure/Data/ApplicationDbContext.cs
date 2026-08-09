@@ -6,7 +6,7 @@ using Users.Infrastructure.Identity;
 
 namespace Users.Infrastructure.Data;
 
-public class ApplicationDbContext : IdentityDbContext<UserIdentity, IdentityRole<Guid>, Guid>
+public class ApplicationDbContext : IdentityDbContext<UserIdentity, RoleIdentity, Guid>
 {
     
 
@@ -21,22 +21,18 @@ public class ApplicationDbContext : IdentityDbContext<UserIdentity, IdentityRole
     {
         base.OnModelCreating(modelBuilder);
 
-        /*modelBuilder.Entity<IdentityUserRole<Guid>>(ur =>
+        modelBuilder.Entity<IdentityUserRole<Guid>>(ur =>
         {
-            ur.HasKey(r => new { r.UserId, r.RoleId });  // TODO !!!
+            ur.HasKey(r => new { r.UserId, r.RoleId });
             ur.HasOne<RoleIdentity>().WithMany(r => r.UserRoles).HasForeignKey(ur => ur.RoleId);
         });
-        
+
         modelBuilder.Entity<RefreshToken>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Token).IsRequired();
-
-            entity.HasOne<User>()
-                .WithMany(u => u.RefreshTokens)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-        });*/
+            entity.Property(e => e.UserId).IsRequired();
+        });
         
     }
 }

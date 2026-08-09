@@ -62,7 +62,7 @@ public class TokenService : ITokenService
             ExpiresAt = DateTime.UtcNow.AddDays(30)
         };
 
-        
+        await _tokenRepository.AddRefreshTokenAsync(refreshToken);
 
         return token;
     }
