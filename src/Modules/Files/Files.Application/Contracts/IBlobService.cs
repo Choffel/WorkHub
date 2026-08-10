@@ -1,8 +1,10 @@
-﻿namespace Files.Application.Contracts;
+﻿using Files.Infrastructure.DTOs;
+
+namespace Files.Application.Contracts;
 
 public interface IBlobService
 {
-    Task<string> UploadAsync(Stream stream, string fileName, string contentType, CancellationToken ct = default);
+    Task<BlobUploadResult> UploadAsync(Stream stream, string fileName, string contentType, CancellationToken ct = default);
     
     Task<Stream> DownloadAsync(string blobName, CancellationToken ct = default);
     

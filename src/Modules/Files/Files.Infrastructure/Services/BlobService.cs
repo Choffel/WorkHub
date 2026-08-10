@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Files.Application.Contracts;
+using Files.Infrastructure.DTOs;
 using Files.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 
@@ -17,7 +18,7 @@ public class BlobService : IBlobService
         _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
     }
     
-    public async Task<string> UploadAsync(Stream stream, string fileName, string contentType, CancellationToken ct = default)
+    public async Task<BlobUploadResult> UploadAsync(Stream stream, string fileName, string contentType, CancellationToken ct = default)
     {
         var extension = Path.GetExtension(fileName);
         var uniqueFileName = $"{Guid.NewGuid()}{extension}";
@@ -33,8 +34,8 @@ public class BlobService : IBlobService
             content: stream, 
             options: new BlobUploadOptions { HttpHeaders = blobHttpHeaders }, 
             cancellationToken: ct);
-        
-        return blobClient.Uri.ToString();
+
+        return new BlobUploadResult(blobClient.Uri.ToString(), uniqueFileName);
     }
 
     public async Task<Stream> DownloadAsync(string blobName, CancellationToken ct = default)
