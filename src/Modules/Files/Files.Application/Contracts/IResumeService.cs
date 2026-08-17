@@ -8,4 +8,7 @@ public interface IResumeService
 {
     Task<ResumeResponse> UploadResumeAsync(UploadFileCommand command, CancellationToken ct = default);
     
+    Task<bool> DeleteResumeAsync(Guid userId,Guid resumeId, CancellationToken ct = default);
+    
+    Task<ResumeResponse> UpdateResumeAsync(Guid userId,Guid resumeId, UploadFileCommand command, CancellationToken ct = default);
 }

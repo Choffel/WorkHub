@@ -1,8 +1,10 @@
 ﻿namespace Files.Application.DTOs;
 
 public record ResumeResponse(
+    Guid UserId,
+    Guid ResumeId,
     string FileName,
     string ContentType,
-    Stream FileStream,
-    long Lenght
+    long Length,
+    DateTime CreatedAt
     );

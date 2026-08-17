@@ -1,7 +1,6 @@
 ﻿using Files.Application.Contracts;
 using Files.Application.DTOs;
 using Files.Domain.Commands;
-using Files.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Host.Controllers;

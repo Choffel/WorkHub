@@ -1,8 +1,8 @@
 ﻿namespace Files.Domain.Commands;
 
-public record UploadFileCommand(Stream Stream, string FileName, string ContentType, long Length)
+public record UploadFileCommand(Guid UserId,Stream Stream, string FileName, string ContentType, long Length)
 {
-    public static UploadFileCommand Create(Stream Stream, string FileName, string ContentType, long Length)
+    public static UploadFileCommand Create(Guid UserId,Stream Stream, string FileName, string ContentType, long Length)
     {
         var allowedExtensions = new[] { ".pdf", ".docx" };
         var extension = Path.GetExtension(FileName).ToLowerInvariant();
@@ -13,6 +13,6 @@ public record UploadFileCommand(Stream Stream, string FileName, string ContentTy
         if (Length > 10 * 1024 * 1024)
             throw new ArgumentException("File size exceeds 10 MB limit.");
 
-        return new UploadFileCommand(Stream, FileName, ContentType, Length);
+        return new UploadFileCommand(UserId,Stream, FileName, ContentType, Length);
     }
 }
