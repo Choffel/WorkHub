@@ -40,7 +40,7 @@ public class TokenService : ITokenService
         _userContext = userContext;
     }
 
-    public async Task<TokenResponseDto> GetTokens(UserDto user)
+    public async Task<TokenResponseDto> GetTokens(UserDto user, CancellationToken cancellationToken = default)
     {
         var accessToken = await CreateTokenAsync(user);
         var refreshToken = await CreateRefreshTokenAsync(user.Id);
@@ -67,7 +67,7 @@ public class TokenService : ITokenService
         return token;
     }
 
-    public async Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(RefreshTokenRequest request)
+    public async Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {
         var storedRefreshToken = await _tokenRepository.GetRefreshTokenAsync(request.RefreshToken);
         if (storedRefreshToken == null || storedRefreshToken.IsExpired)
@@ -94,7 +94,7 @@ public class TokenService : ITokenService
         return Result<TokenResponseDto>.Success(new TokenResponseDto(accessToken, newRefreshToken));
     }
 
-    public async Task<Result<bool>> RevokeRefreshTokenAsync(RefreshTokenRequest request)
+    public async Task<Result<bool>> RevokeRefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default)
     {
         var refreshToken = await _tokenRepository.GetRefreshTokenAsync(request.RefreshToken);
         if (refreshToken == null || refreshToken.UserId != _userContext.UserId || refreshToken.IsExpired)
