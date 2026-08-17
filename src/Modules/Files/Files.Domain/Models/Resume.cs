@@ -2,27 +2,54 @@
 
 public class Resume
 {
-    public Guid Id { get; set; }
+    public Guid Id { get;  private set; }
     
-    //public User user 
+    public Guid UserId { get; private set; }    
     
-    public string FileName { get; set; }
+    public string FileName { get; private set; }
     
-    public string BlobName { get; set; }
+    public string BlobName { get; private set; }
     
-    public string ContentType { get; set; }
+    public string ContentType { get; private set; }
+    public long Size { get;  private set; }
     
-    public long Size { get; set; }
+    public DateTime UpdatedAt { get;  private set; }
     
-    public DateTime UpdatedAt { get; set; }
+    public DateTime CreatedAt { get;  private set; }
     
-    public DateTime CreatedAt { get; set; }
-    
-    public bool IsDeleted { get; set; }
+    public bool IsDeleted { get;  private set; }
+
+    public Resume(Guid userId, string fileName, string blobName, string contentType, long size)
+    {
+        Id = Guid.NewGuid();
+        UserId = userId;
+        FileName = fileName;
+        BlobName = blobName;
+        ContentType = contentType;
+        Size = size;
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+        IsDeleted = false;
+    }
+
+    public static Resume Create(Guid userId, string fileName, string blobName, string contentType, long size)
+    {
+        return new Resume(userId, fileName, blobName, contentType, size);
+    }
     
     
     public void Delete()
     {
+        UpdatedAt =  DateTime.UtcNow;
         IsDeleted = true;
+    }
+    
+    public void UpdateFile(string filename,  long size, DateTime updatedAt, string contentType, string blobName)
+    {
+        FileName = filename;
+        Size = size;
+        UpdatedAt = updatedAt;
+        ContentType = contentType;
+        BlobName = blobName;
     }
 }
