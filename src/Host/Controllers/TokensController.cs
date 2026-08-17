@@ -20,7 +20,7 @@ public class TokensController : ControllerBase
     }
 
     [HttpPost("RevokeRefreshToken")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize]
     public async Task<Result<bool>> RevokeRefreshToken([FromBody] RefreshTokenRequest request)
     {
         var result = await _tokenService.RevokeRefreshTokenAsync(request);
