@@ -1,5 +1,3 @@
-using BuildingBlocks.Interfaces;
-using BuildingBlocks.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -45,7 +43,6 @@ public static class DependencyInjection
         #region Services
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IUserContext, UserContext>();
         #endregion
 
         #region Repositories
