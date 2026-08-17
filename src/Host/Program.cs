@@ -1,4 +1,5 @@
 using System.Text;
+using BuildingBlocks;
 using Host.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // ── Modules DI ──
+builder.Services.AddBuildingBlocks();
 builder.Services.AddUsersModule(builder.Configuration);
 
 // ── JWT Authentication ──
@@ -58,13 +60,13 @@ builder.Services.AddSwaggerGen(options =>
         Title = "WorkHub API",
         Version = "v1"
     });
-
+    
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header. Example: \"Bearer {token}\"",
+        Description = "JWT Authorization header using the Bearer scheme.",
         Name = "Authorization",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         Scheme = "Bearer"
     });
 
