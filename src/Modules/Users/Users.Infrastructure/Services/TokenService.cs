@@ -118,6 +118,26 @@ public class TokenService : ITokenService
         
         return Result<IEnumerable<ActiveSessionDto>>.Success(activeSessions);
     }
+    
+    public async Task<Result<string>> RevokeSessionAsync(Guid tokenId, CancellationToken ct = default)
+    {
+        var refreshToken = await _tokenRepository.GetRefreshTokenByIdAsync(tokenId, ct);
+
+        if (refreshToken == null || refreshToken.UserId != _userContext.UserId || refreshToken.IsExpired)
+        {
+            return Result<string>.Failure("Invalid refresh token.");
+        }
+
+        if (refreshToken.Token == _userContext.RefreshToken)
+        {
+            return Result<string>.Failure("Cannot revoke the current session.");
+        }
+
+        refreshToken.ExpiresAt = DateTime.UtcNow;
+        await _tokenRepository.DeleteRefreshTokenAsync(refreshToken, ct);
+
+        return Result<string>.Success("Session revoked successfully.");
+    }
 
     private async Task<string> CreateTokenAsync(UserDto user)
     {

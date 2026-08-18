@@ -18,6 +18,17 @@ public class TokenRepository : ITokenRepository
     {
         return _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshToken);
     }
+    
+    public async Task<RefreshToken?> GetRefreshTokenByIdAsync(Guid tokenId, CancellationToken ct = default)
+    {
+        return await _dbContext.RefreshTokens.FirstOrDefaultAsync(rt => rt.Id == tokenId, ct);
+    }
+    
+    public async Task DeleteRefreshTokenAsync(RefreshToken refreshToken, CancellationToken ct = default)
+    {
+        _dbContext.RefreshTokens.Remove(refreshToken);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 
     public async Task AddRefreshTokenAsync(RefreshToken refreshToken)
     {

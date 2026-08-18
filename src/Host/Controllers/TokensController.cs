@@ -26,7 +26,15 @@ public class TokensController : ControllerBase
         var result = await _tokenService.RevokeRefreshTokenAsync(cancellationToken);
         return result;
     }
-    
+
+    [Authorize]
+    [HttpPost("RevokeSession")]
+    public async Task<Result<string>> RevokeSession([FromBody]RevokeSessionRequest request, CancellationToken ct = default)
+    {
+        var result = await _tokenService.RevokeSessionAsync(request.TokenId, ct);
+        return result;
+    }
+
     [AllowAnonymous]
     [HttpPost("NewAccessToken")]
     public async Task<Result<TokenResponseDto>> GetNewAccessToken(CancellationToken cancellationToken)
