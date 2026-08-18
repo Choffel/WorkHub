@@ -21,17 +21,17 @@ public class TokensController : ControllerBase
 
     [HttpPost("RevokeRefreshToken")]
     [Authorize]
-    public async Task<Result<bool>> RevokeRefreshToken([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> RevokeRefreshToken(CancellationToken cancellationToken)
     {
-        var result = await _tokenService.RevokeRefreshTokenAsync(request, cancellationToken);
+        var result = await _tokenService.RevokeRefreshTokenAsync(cancellationToken);
         return result;
     }
     
     [AllowAnonymous]
     [HttpPost("NewAccessToken")]
-    public async Task<Result<TokenResponseDto>> GetNewAccessToken([FromBody] RefreshTokenRequest request, CancellationToken cancellationToken)
+    public async Task<Result<TokenResponseDto>> GetNewAccessToken(CancellationToken cancellationToken)
     {
-        var result = await _tokenService.GetNewAccessTokenAsync(request, cancellationToken);
+        var result = await _tokenService.GetNewAccessTokenAsync(cancellationToken);
         return result;
     }
 
