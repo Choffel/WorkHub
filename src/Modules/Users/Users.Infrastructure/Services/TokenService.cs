@@ -109,6 +109,19 @@ public class TokenService : ITokenService
 
         return Result<bool>.Success(true);
     }
+    
+    public async Task<Result<IEnumerable<ActiveSessionDto>>> GetActiveSessionsAsync(CancellationToken ct = default)
+    {
+        var refreshTokens = await _tokenRepository.GetActiveRefreshTokensAsync(_userContext.UserId, ct);
+
+        var activeSessions = refreshTokens.Select(rt => new ActiveSessionDto(
+            rt.Id,
+            rt.CreatedAt,
+            IsCurrentSession: rt.Token == _userContext.RefreshToken
+        ));
+        
+        return Result<IEnumerable<ActiveSessionDto>>.Success(activeSessions);
+    }
 
     private async Task<string> CreateTokenAsync(UserDto user)
     {

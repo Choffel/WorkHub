@@ -9,4 +9,5 @@ public interface ITokenService
     Task<TokenResponseDto> GetTokens(UserDto userDto, CancellationToken cancellationToken = default);
     Task<Result<bool>> RevokeRefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default);
     Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<ActiveSessionDto>>> GetActiveSessionsAsync(CancellationToken ct = default);
 }

@@ -34,4 +34,12 @@ public class TokensController : ControllerBase
         var result = await _tokenService.GetNewAccessTokenAsync(request, cancellationToken);
         return result;
     }
+
+    [Authorize]
+    [HttpGet("ActiveSessions")]
+    public async Task<Result<IEnumerable<ActiveSessionDto>>> GetActiveSessionsAsync(CancellationToken ct = default)
+    {
+        var result = await _tokenService.GetActiveSessionsAsync(ct);
+        return result;
+    }
 }

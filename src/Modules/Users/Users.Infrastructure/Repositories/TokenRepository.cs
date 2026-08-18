@@ -30,4 +30,13 @@ public class TokenRepository : ITokenRepository
         _dbContext.RefreshTokens.Update(refreshToken);
         await _dbContext.SaveChangesAsync();
     }
+
+    public async Task<IReadOnlyCollection<RefreshToken>> GetActiveRefreshTokensAsync(Guid userId,
+        CancellationToken ct = default)
+    {
+        return await _dbContext.RefreshTokens
+            .AsNoTracking()
+            .Where(rf => rf.UserId == userId && rf.ExpiresAt > DateTime.UtcNow)
+            .ToListAsync(ct);
+    }
 }
