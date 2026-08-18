@@ -69,6 +69,14 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer"
     });
+    
+    options.AddSecurityDefinition("RefreshToken", new OpenApiSecurityScheme
+    {
+        Name = "X-Refresh-Token",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterLocation.Header,
+        Description = "Enter your Refresh Token for the X-Refresh-Token header"
+    });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -79,6 +87,17 @@ builder.Services.AddSwaggerGen(options =>
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        },
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "RefreshToken"
                 }
             },
             Array.Empty<string>()
