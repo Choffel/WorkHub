@@ -40,7 +40,7 @@ public class TokenService : ITokenService
         _userContext = userContext;
     }
 
-    public async Task<TokenResponseDto> GetTokens(UserDto user)
+    public async Task<TokenResponseDto> GetTokens(UserDto user, CancellationToken cancellationToken = default)
     {
         var accessToken = await CreateTokenAsync(user);
         var refreshToken = await CreateRefreshTokenAsync(user.Id);
@@ -67,17 +67,15 @@ public class TokenService : ITokenService
         return token;
     }
 
-    public async Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(RefreshTokenRequest request)
+    public async Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(CancellationToken cancellationToken = default)
     {
-        var storedRefreshToken = await _tokenRepository.GetRefreshTokenAsync(request.RefreshToken);
+        var storedRefreshToken = await _tokenRepository.GetRefreshTokenAsync(_userContext.RefreshToken);
         if (storedRefreshToken == null || storedRefreshToken.IsExpired)
         {
             return Result<TokenResponseDto>.Failure("Invalid or expired refresh token.");
         }
 
         storedRefreshToken.ExpiresAt = DateTime.UtcNow;
-
-        
 
         var newRefreshToken = await CreateRefreshTokenAsync(storedRefreshToken.UserId);
 
@@ -94,9 +92,9 @@ public class TokenService : ITokenService
         return Result<TokenResponseDto>.Success(new TokenResponseDto(accessToken, newRefreshToken));
     }
 
-    public async Task<Result<bool>> RevokeRefreshTokenAsync(RefreshTokenRequest request)
+    public async Task<Result<bool>> RevokeRefreshTokenAsync(CancellationToken cancellationToken = default)
     {
-        var refreshToken = await _tokenRepository.GetRefreshTokenAsync(request.RefreshToken);
+        var refreshToken = await _tokenRepository.GetRefreshTokenAsync(_userContext.RefreshToken);
         if (refreshToken == null || refreshToken.UserId != _userContext.UserId || refreshToken.IsExpired)
         {
             return Result<bool>.Failure("Invalid refresh token.");
@@ -105,9 +103,40 @@ public class TokenService : ITokenService
         refreshToken.ExpiresAt = DateTime.UtcNow;
         
 
-        _logger.LogInformation("Refresh token revoked for user {UserId}", _userContext.UserId);
-
         return Result<bool>.Success(true);
+    }
+    
+    public async Task<Result<IEnumerable<ActiveSessionDto>>> GetActiveSessionsAsync(CancellationToken ct = default)
+    {
+        var refreshTokens = await _tokenRepository.GetActiveRefreshTokensAsync(_userContext.UserId, ct);
+
+        var activeSessions = refreshTokens.Select(rt => new ActiveSessionDto(
+            rt.Id,
+            rt.CreatedAt,
+            IsCurrentSession: rt.Token == _userContext.RefreshToken
+        ));
+        
+        return Result<IEnumerable<ActiveSessionDto>>.Success(activeSessions);
+    }
+    
+    public async Task<Result<string>> RevokeSessionAsync(Guid tokenId, CancellationToken ct = default)
+    {
+        var refreshToken = await _tokenRepository.GetRefreshTokenByIdAsync(tokenId, ct);
+
+        if (refreshToken == null || refreshToken.UserId != _userContext.UserId || refreshToken.IsExpired)
+        {
+            return Result<string>.Failure("Invalid refresh token.");
+        }
+
+        if (refreshToken.Token == _userContext.RefreshToken)
+        {
+            return Result<string>.Failure("Cannot revoke the current session.");
+        }
+
+        refreshToken.ExpiresAt = DateTime.UtcNow;
+        await _tokenRepository.DeleteRefreshTokenAsync(refreshToken, ct);
+
+        return Result<string>.Success("Session revoked successfully.");
     }
 
     private async Task<string> CreateTokenAsync(UserDto user)

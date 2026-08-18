@@ -6,7 +6,9 @@ namespace Users.Appliation.Interfaces.Services;
 
 public interface ITokenService
 {
-    Task<TokenResponseDto> GetTokens(UserDto userDto);
-    Task<Result<bool>> RevokeRefreshTokenAsync(RefreshTokenRequest request);
-    Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(RefreshTokenRequest request);
+    Task<TokenResponseDto> GetTokens(UserDto userDto, CancellationToken cancellationToken = default);
+    Task<Result<bool>> RevokeRefreshTokenAsync(CancellationToken cancellationToken = default);
+    Task<Result<TokenResponseDto>> GetNewAccessTokenAsync(CancellationToken cancellationToken = default);
+    Task<Result<IEnumerable<ActiveSessionDto>>> GetActiveSessionsAsync(CancellationToken ct = default);
+    Task<Result<string>> RevokeSessionAsync(Guid tokenId, CancellationToken ct = default);
 }

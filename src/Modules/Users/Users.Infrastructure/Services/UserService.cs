@@ -26,7 +26,7 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<Result<string>> RegisterAsync(CreateUserDto createUserDto)
+    public async Task<Result<string>> RegisterAsync(CreateUserDto createUserDto, CancellationToken cancellationToken = default)
     {
         var user = new UserIdentity
         {
@@ -42,17 +42,17 @@ public class UserService : IUserService
         }
 
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        _logger.LogInformation("Email confirmation token for user {UserId}: {Token}", user.Id, token); // TODO !!!
+        _logger.LogInformation("Email confirmation token for user {UserId}: {Token}", user.Id, token);
 
         return Result<string>.Success("user created successfully");
     }
 
-    public async Task<Result<TokenResponseDto>> AuthenticateAsync(AuthRequest request)
+    public async Task<Result<TokenResponseDto>> AuthenticateAsync(AuthRequest request, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            return Result<TokenResponseDto>.Failure("Invalid Email");
+            return Result<TokenResponseDto>.Failure("Invalid Email or Password");
         }
 
         var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
@@ -64,30 +64,32 @@ public class UserService : IUserService
         var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, request.Password);
         if (!isPasswordCorrect)
         {
-            return Result<TokenResponseDto>.Failure("Invalid Password");
+            return Result<TokenResponseDto>.Failure("Invalid Email or Password");
         }
 
         var userDto = new UserDto(user.Id, user.UserName ?? string.Empty, user.Email ?? string.Empty);
 
-        var tokens = await _tokenService.GetTokens(userDto);
+        var tokens = await _tokenService.GetTokens(userDto, cancellationToken);
 
         return Result<TokenResponseDto>.Success(new TokenResponseDto(tokens.AccessToken, tokens.RefreshToken));
     }
 
-    public async Task<Result<string>> ForgotPasswordAsync(ForgotPasswordRequest request)
+    public async Task<Result<string>> ForgotPasswordAsync(ForgotPasswordRequest request, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            return Result<string>.Failure($"{request.Email} - this email address is not registered");
+            return Result<string>.Success("If this email address exists in the system, instructions have been sent to the email.");
         }
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        
+        _logger.LogInformation("Password reset token for user {UserId}: {Token}", user.Id, token);
 
-        return Result<string>.Success("Password reset successfully");
+        return Result<string>.Success("If this email address exists in the system, instructions have been sent to the email.");
     }
 
-    public async Task<Result<string>> ResetPasswordAsync(ResetPasswordDto request)
+    public async Task<Result<string>> ResetPasswordAsync(ResetPasswordDto request, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
@@ -106,7 +108,7 @@ public class UserService : IUserService
         return Result<string>.Success("Password reset successfully");
     }
 
-    public async Task<Result<string>> ConfirmEmailAsync(ConfirmEmailRequest request)
+    public async Task<Result<string>> ConfirmEmailAsync(ConfirmEmailRequest request, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
@@ -114,12 +116,16 @@ public class UserService : IUserService
             return Result<string>.Failure("Invalid email address");
         }
 
-        await _userManager.ConfirmEmailAsync(user, request.Token);
+        var result = await _userManager.ConfirmEmailAsync(user, request.Token);
+        if (!result.Succeeded)
+        {
+            return Result<string>.Failure("Invalid or expired confirmation token");
+        }
 
         var roleExists = await _roleManager.RoleExistsAsync("User");
         if (!roleExists)
         {
-            Console.WriteLine("Role doesn't exist");
+            return Result<string>.Failure("Role 'User' does not exist");
         }
 
         await _userManager.AddToRoleAsync(user, "User");
@@ -127,7 +133,7 @@ public class UserService : IUserService
         return Result<string>.Success("Email confirmed");
     }
 
-    public async Task<Result<string>> UpdateUserAsync(UpdateUserDTO userDto)
+    public async Task<Result<string>> UpdateUserAsync(UpdateUserDTO userDto, CancellationToken cancellationToken = default)
     {
         var user = await _userManager.FindByIdAsync(userDto.Id.ToString());
         if (user == null)

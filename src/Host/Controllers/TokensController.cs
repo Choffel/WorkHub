@@ -20,18 +20,34 @@ public class TokensController : ControllerBase
     }
 
     [HttpPost("RevokeRefreshToken")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public async Task<Result<bool>> RevokeRefreshToken([FromBody] RefreshTokenRequest request)
+    [Authorize]
+    public async Task<Result<bool>> RevokeRefreshToken(CancellationToken cancellationToken)
     {
-        var result = await _tokenService.RevokeRefreshTokenAsync(request);
+        var result = await _tokenService.RevokeRefreshTokenAsync(cancellationToken);
         return result;
     }
-    
+
+    [Authorize]
+    [HttpPost("RevokeSession")]
+    public async Task<Result<string>> RevokeSession([FromBody]RevokeSessionRequest request, CancellationToken ct = default)
+    {
+        var result = await _tokenService.RevokeSessionAsync(request.TokenId, ct);
+        return result;
+    }
+
     [AllowAnonymous]
     [HttpPost("NewAccessToken")]
-    public async Task<Result<TokenResponseDto>> GetNewAccessToken([FromBody] RefreshTokenRequest request)
+    public async Task<Result<TokenResponseDto>> GetNewAccessToken(CancellationToken cancellationToken)
     {
-        var result = await _tokenService.GetNewAccessTokenAsync(request);
+        var result = await _tokenService.GetNewAccessTokenAsync(cancellationToken);
+        return result;
+    }
+
+    [Authorize]
+    [HttpGet("ActiveSessions")]
+    public async Task<Result<IEnumerable<ActiveSessionDto>>> GetActiveSessionsAsync(CancellationToken ct = default)
+    {
+        var result = await _tokenService.GetActiveSessionsAsync(ct);
         return result;
     }
 }

@@ -17,37 +17,37 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<Result<string>> Register([FromBody] CreateUserDto createUserDto)    
-    {                                                                                     
-        var result = await _userService.RegisterAsync(createUserDto);
+    public async Task<Result<string>> Register([FromBody] CreateUserDto createUserDto, CancellationToken cancellationToken)    
+    {
+        var result = await _userService.RegisterAsync(createUserDto, cancellationToken);
         return result;
     }
 
     [HttpPost("login")]
-    public async Task<Result<TokenResponseDto>> LoginAsync([FromBody] AuthRequest request) 
+    public async Task<Result<TokenResponseDto>> LoginAsync([FromBody] AuthRequest request, CancellationToken cancellationToken) 
     {
-        var result = await _userService.AuthenticateAsync(request);
+        var result = await _userService.AuthenticateAsync(request, cancellationToken);
         return result;
     }
 
     [HttpPost("ForgotPassword")]
-    public async Task<Result<string>> ForgotPasswordAsync([FromBody ]ForgotPasswordRequest request)
+    public async Task<Result<string>> ForgotPasswordAsync([FromBody ]ForgotPasswordRequest request, CancellationToken cancellationToken)
     {
-        var result = await _userService.ForgotPasswordAsync(request);
+        var result = await _userService.ForgotPasswordAsync(request, cancellationToken);
         return result;
     }
 
-    [HttpPost("ResetPassword")] // TODO разобраться с хттп методами
-    public async Task<Result<string>> ResetPasswordAsync([FromBody] ResetPasswordDto request)
+    [HttpPost("ResetPassword")]
+    public async Task<Result<string>> ResetPasswordAsync([FromBody] ResetPasswordDto request, CancellationToken cancellationToken)
     {
-        var result = await _userService.ResetPasswordAsync(request);
+        var result = await _userService.ResetPasswordAsync(request, cancellationToken);
         return result;
     }
 
     [HttpPost("ConfirmEmail")]
-    public async Task<Result<string>> ConfirmEmailAsync([FromBody] ConfirmEmailRequest request)
+    public async Task<Result<string>> ConfirmEmailAsync([FromBody] ConfirmEmailRequest request, CancellationToken cancellationToken)
     {
-        var result = await _userService.ConfirmEmailAsync(request);
+        var result = await _userService.ConfirmEmailAsync(request, cancellationToken);
         return result;
     }
 }
