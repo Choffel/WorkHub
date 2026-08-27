@@ -19,20 +19,33 @@ public class ResumeService : IResumeService
 
     public async Task<ResumeResponse> UploadResumeAsync(UploadFileCommand command, CancellationToken ct = default)
     {
-        UploadFileCommand.Create(command.UserId,command.Stream, command.FileName, command.ContentType, command.Length);
-        
-        var uploadResult = await _blobService.UploadAsync(command.Stream, command.FileName, command.ContentType, ct);
-        
-        var resume = Resume.Create(
-            command.UserId, 
+        var validCommand = UploadFileCommand.Create(
+            command.UserId,
+            command.Stream,
             command.FileName,
-            uploadResult.BlobName,
             command.ContentType,
-            command.Length
+            command.Length,
+            command.UpdatedAt,
+            command.BlobName
         );
-        
+
+        var uploadResult = await _blobService.UploadAsync(
+            validCommand.Stream,
+            validCommand.FileName,
+            validCommand.ContentType,
+            ct
+        );
+
+        var resume = Resume.Create(
+            validCommand.UserId,
+            validCommand.FileName,
+            uploadResult.BlobName,
+            validCommand.ContentType,
+            validCommand.Length
+        );
+
         await _fileRepository.AddResumeAsync(resume);
-         
+
         return new ResumeResponse(
             resume.UserId,
             resume.Id,
@@ -71,15 +84,26 @@ public class ResumeService : IResumeService
         
         if (resume == null || resume.IsDeleted)
         {
-            
+            throw new Exception("Resume deleted or null");
         }
 
        
         if (resume.UserId != userId)
         {
-            
+            throw new Exception("It's not your resume.");
         }
         
-        await _blobService.DeleteAsync()
+        resume.UpdateFile(command.FileName,command.Length,command.UpdatedAt, command.ContentType,command.BlobName);
+        
+        await _blobService.UploadAsync(command.Stream,command.FileName,command.ContentType,ct);
+
+        return new ResumeResponse(
+            resume.UserId,
+            resume.Id,
+            resume.FileName,
+            resume.ContentType,
+            resume.Size,
+            resume.CreatedAt);
+
     }
 }

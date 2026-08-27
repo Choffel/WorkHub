@@ -1,8 +1,10 @@
-﻿namespace Files.Domain.Commands;
+﻿using System.Windows.Input;
 
-public record UploadFileCommand(Guid UserId,Stream Stream, string FileName, string ContentType, long Length)
+namespace Files.Domain.Commands;
+
+public record UploadFileCommand(Guid UserId,Stream Stream, string FileName, string ContentType, long Length, DateTime UpdatedAt, string BlobName)
 {
-    public static UploadFileCommand Create(Guid UserId,Stream Stream, string FileName, string ContentType, long Length)
+    public static UploadFileCommand Create(Guid UserId,Stream Stream, string FileName, string ContentType, long Length, DateTime UpdatedAt, string BlobName)
     {
         var allowedExtensions = new[] { ".pdf", ".docx" };
         var extension = Path.GetExtension(FileName).ToLowerInvariant();
@@ -13,6 +15,6 @@ public record UploadFileCommand(Guid UserId,Stream Stream, string FileName, stri
         if (Length > 10 * 1024 * 1024)
             throw new ArgumentException("File size exceeds 10 MB limit.");
 
-        return new UploadFileCommand(UserId,Stream, FileName, ContentType, Length);
+        return new UploadFileCommand(UserId,Stream, FileName, ContentType, Length, UpdatedAt,  BlobName);
     }
 }
