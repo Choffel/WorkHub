@@ -23,16 +23,18 @@ public class FileRepository : IFileRepository
         await _dbContext.Resumes.AddAsync(resume);
     }
 
-    public async Task<Resume> UpdateResumeAsync(Resume resume)
+    public Task<Resume> UpdateResumeAsync(Resume resume)
     {
          _dbContext.Resumes.Update(resume);
-         await _dbContext.SaveChangesAsync();
-         return resume;
+         
+         return Task.FromResult(resume);
     }
-
-    public Task DeleteResumeAsync(Resume resume, Guid userId)
+    
+    public  Task DeleteResumeAsync(Resume resume)
     {
-        _dbContext.Resumes.Remove(resume);
+         _dbContext.Resumes.Remove(resume);
+         
+         return Task.CompletedTask;
     }
 
     
