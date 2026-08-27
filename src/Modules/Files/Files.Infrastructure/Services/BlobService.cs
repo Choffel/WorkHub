@@ -18,7 +18,7 @@ public class BlobService : IBlobService
         _blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
     }
     
-    public async Task<BlobUploadResult> UploadAsync(Stream stream, string fileName, string contentType, CancellationToken ct = default)
+    public async Task<BlobUploadResult> UploadAsync(Stream stream, string fileName, string contentType, CancellationToken ct = default, bool overwrite = true)
     {
         var extension = Path.GetExtension(fileName);
         var uniqueFileName = $"{Guid.NewGuid()}{extension}";
